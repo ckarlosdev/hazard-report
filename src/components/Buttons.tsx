@@ -29,10 +29,8 @@ function Buttons({}: Props) {
       return;
     }
     if (!validateCanSave()) return;
-    
 
     const cleanSignatures = signatures.map((sig) => {
-      // Verificamos si tiene la coma del prefijo data:image...
       const hasComma = sig.imgData.includes(",");
       const pureBase64 = hasComma ? sig.imgData.split(",")[1] : sig.imgData;
 
@@ -51,7 +49,7 @@ function Buttons({}: Props) {
     };
 
     setFullHazardReport(updatedHazardReport);
-    console.log("Saving Report:", updatedHazardReport);
+    // console.log("Saving Report:", updatedHazardReport);
     mutate({ reportData: updatedHazardReport });
   };
 
@@ -85,7 +83,10 @@ function Buttons({}: Props) {
             <Button
               variant="outline-primary"
               style={{ width: "150px", fontWeight: "bold" }}
-              onClick={() => handleReset()}
+              onClick={() => {
+                handleReset();
+                window.location.href = `https://ckarlosdev.github.io/binder-webapp/#/binder/${jobId}`;
+              }}
             >
               Go Back
             </Button>

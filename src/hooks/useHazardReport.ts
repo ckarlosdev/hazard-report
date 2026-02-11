@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { HazardReport } from "../types";
-import { api } from "./apiConfig";
+import { publicApi } from "./publicApiConfig";
 
 const createHazardReport = async ({
   reportData,
@@ -9,9 +9,9 @@ const createHazardReport = async ({
 }) => {
   if (reportData.preTasksId) {
     console.log("udpating report...");
-    return api.put(`v1/pretask`, reportData);
+    return publicApi.put(`v1/pretask`, reportData);
   }
-  return api.post(`v1/pretask`, reportData);
+  return publicApi.post(`v1/pretask`, reportData);
 };
 
 export function useSaveHazardReport() {
@@ -34,7 +34,7 @@ export function useSaveHazardReport() {
 const queryGetHazardReportById = async (
   preTasksId: number
 ): Promise<HazardReport> => {
-  const { data } = await api.get(`v1/pretask/dto/${preTasksId}`);
+  const { data } = await publicApi.get(`v1/pretask/dto/${preTasksId}`);
   return data;
 };
 

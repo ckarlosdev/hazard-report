@@ -21,12 +21,12 @@ import { useMutationState } from "@tanstack/react-query";
 type Props = {};
 
 function Layout({}: Props) {
+  const [searchParams] = useSearchParams();
   const isLoaded = useContextStore((s) => s.isLoaded);
   const setIsLoaded = useContextStore((s) => s.setIsLoaded);
   const setIds = useContextStore((s) => s.setIds);
   const { hazardReportId } = useContextStore();
 
-  const [searchParams] = useSearchParams();
   const { data: hazardReportData } = useGetHazardReport(
     hazardReportId ? Number(hazardReportId) : 0
   );
@@ -45,16 +45,12 @@ function Layout({}: Props) {
       ? parseInt(hazardReportIdParam, 10)
       : null;
 
-    console.log(" Setting IDs:", { jobId, hazardReportId });
-
     setIds(jobId, hazardReportId);
     setIsLoaded(true);
   }, [searchParams]);
 
   useEffect(() => {
-    console.log("Hazard Report busqueda");
     if (hazardReportData) {
-      console.log("Hazard Report Data:", hazardReportData);
       setFullHazardReport(hazardReportData);
       setFullActivityData(hazardReportData.activities[0]);
       setFullPretaskOptionsData(hazardReportData.options);

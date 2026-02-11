@@ -62,14 +62,14 @@ const SignatureArea = () => {
                   style={{ width: "150px" }}
                   onClick={clear}
                 >
-                  Limpiar
+                  Clean
                 </Button>
                 <Button
                   variant="outline-secondary"
                   style={{ width: "150px" }}
                   onClick={save}
                 >
-                  Guardar Firma
+                  Save Signature
                 </Button>
               </Stack>
             </Col>
