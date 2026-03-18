@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { HazardReport } from "../types";
 import { publicApi } from "./publicApiConfig";
+import { useContextStore } from "../stores/useContextStore";
 
 const createHazardReport = async ({
   reportData,
@@ -8,7 +9,6 @@ const createHazardReport = async ({
   reportData: HazardReport;
 }) => {
   if (reportData.preTasksId) {
-    console.log("udpating report...");
     return publicApi.put(`v1/pretask`, reportData);
   }
   return publicApi.post(`v1/pretask`, reportData);
@@ -16,6 +16,7 @@ const createHazardReport = async ({
 
 export function useSaveHazardReport() {
   const queryClient = useQueryClient();
+  const jobId = useContextStore((s) => s.jobId);
 
   return useMutation({
     mutationFn: createHazardReport,
@@ -24,6 +25,7 @@ export function useSaveHazardReport() {
       const newId = response.data.preTasksId;
       queryClient.invalidateQueries({ queryKey: ["hazardReport", newId] });
       alert("Hazard report saved successfully.");
+      window.location.href = `https://ckarlosdev.github.io/binder-webapp/#/binder/${jobId}`;
     },
     onError: () => {
       alert("Error saving hazard report.");
@@ -32,7 +34,7 @@ export function useSaveHazardReport() {
 }
 
 const queryGetHazardReportById = async (
-  preTasksId: number
+  preTasksId: number,
 ): Promise<HazardReport> => {
   const { data } = await publicApi.get(`v1/pretask/dto/${preTasksId}`);
   return data;

@@ -25,20 +25,28 @@ function Layout({}: Props) {
   const isLoaded = useContextStore((s) => s.isLoaded);
   const setIsLoaded = useContextStore((s) => s.setIsLoaded);
   const setIds = useContextStore((s) => s.setIds);
-  const { hazardReportId } = useContextStore();
+  const { hazardReportId, jobId: jobIdStored } = useContextStore();
 
   const { data: hazardReportData } = useGetHazardReport(
-    hazardReportId ? Number(hazardReportId) : 0
+    hazardReportId ? Number(hazardReportId) : 0,
   );
 
-  const { setFullHazardReport } = useHazardStore();
-  const { setFullActivityData } = useActivityStore();
-  const { setFullPretaskOptionsData } = usePretaskOptionsStore();
-  const { setFullSignaturesData } = useSignatureStore();
+  const { setFullHazardReport, reset: resetHazard } = useHazardStore();
+  const { setFullActivityData, reset: resetActivity } = useActivityStore();
+  const { setFullPretaskOptionsData, reset: resetPretaskOptions } =
+    usePretaskOptionsStore();
+  const { setFullSignaturesData, reset: resetSignatures } = useSignatureStore();
 
   useEffect(() => {
     const jobIdParam = searchParams.get("jobId");
     const hazardReportIdParam = searchParams.get("hazardReportId");
+    const isNewAction = searchParams.get("action") === "new";
+
+    const isDifferentJob = jobIdStored && Number(jobIdParam) !== jobIdStored;
+
+    if (isNewAction || (jobIdParam && isDifferentJob && !hazardReportIdParam)) {
+      handleReset();
+    }
 
     const jobId = jobIdParam ? parseInt(jobIdParam, 10) : null;
     const hazardReportId = hazardReportIdParam
@@ -47,22 +55,27 @@ function Layout({}: Props) {
 
     setIds(jobId, hazardReportId);
     setIsLoaded(true);
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     if (hazardReportData) {
       setFullHazardReport(hazardReportData);
-      setFullActivityData(hazardReportData.activities[0]);
-      setFullPretaskOptionsData(hazardReportData.options);
+      setFullActivityData(hazardReportData.activities?.[0] || null);
+      setFullPretaskOptionsData(hazardReportData.options || []);
 
-      const normalizedSignatures = hazardReportData.signatures.map((sig) => ({
-        ...sig,
-        temporalId:
-          sig.temporalId || `sig-${sig.employeesId || crypto.randomUUID()}`,
-        imgData: sig.imgData.startsWith("data:image")
-          ? sig.imgData
-          : `data:image/png;base64,${sig.imgData}`,
-      }));
+      const normalizedSignatures = (hazardReportData.signatures || []).map(
+        (sig) => ({
+          ...sig,
+          temporalId:
+            sig.temporalId || `sig-${sig.employeesId || crypto.randomUUID()}`,
+          imgData: sig.imgData
+            ? sig.imgData.startsWith("data:image")
+              ? sig.imgData
+              : `data:image/png;base64,${sig.imgData}`
+            : null,
+        }),
+      );
+
       setFullSignaturesData(normalizedSignatures);
     }
   }, [hazardReportData]);
@@ -73,6 +86,13 @@ function Layout({}: Props) {
     contentRef: componenteRef,
     documentTitle: "Hazard Report",
   });
+
+  const handleReset = () => {
+    resetHazard();
+    resetActivity();
+    resetPretaskOptions();
+    resetSignatures();
+  };
 
   const isSavingReport =
     useMutationState({

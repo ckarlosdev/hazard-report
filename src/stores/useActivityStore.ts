@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Activity } from "../types";
+import { persist } from "zustand/middleware";
 
 type ActivityStore = {
   activity: Activity;
@@ -15,25 +16,32 @@ const initialActivityData: Activity = {
   controls: "",
 };
 
-const useActivityStore = create<ActivityStore>()((set) => ({
-  activity: initialActivityData,
-  setActivity: (key, value) =>
-    set((state) => ({
-      activity: {
-        ...state.activity,
-        [key]: value,
-      },
-    })),
-  setFullActivityData: (data) =>
-    set(() => ({
-      activity: {
-        activitiesId: data.activitiesId,
-        activity: data.activity,
-        hazards: data.hazards,
-        controls: data.controls,
-      },
-    })),
-  reset: () => set({ activity: initialActivityData }),
-}));
+const useActivityStore = create<ActivityStore>()(
+  persist(
+    (set) => ({
+      activity: initialActivityData,
+      setActivity: (key, value) =>
+        set((state) => ({
+          activity: {
+            ...state.activity,
+            [key]: value,
+          },
+        })),
+      setFullActivityData: (data) =>
+        set(() => ({
+          activity: {
+            activitiesId: data.activitiesId,
+            activity: data.activity,
+            hazards: data.hazards,
+            controls: data.controls,
+          },
+        })),
+      reset: () => set({ activity: initialActivityData }),
+    }),
+    {
+      name: "activity-storage",
+    },
+  ),
+);
 
 export default useActivityStore;

@@ -6,6 +6,7 @@ import useSignatureStore from "../stores/useSignatureStore";
 import { useSaveHazardReport } from "../hooks/useHazardReport";
 import { useContextStore } from "../stores/useContextStore";
 import "../styles/buttons.css";
+import { useAuthStore } from "../hooks/authStore";
 
 type Props = {};
 
@@ -15,6 +16,7 @@ function Buttons({}: Props) {
     hazardReport,
     setFullHazardReport,
   } = useHazardStore();
+  const { user: userAuth } = useAuthStore();
 
   const { reset: resetActivity, activity } = useActivityStore();
   const { reset: resetPretaskOptions, pretaskOptions } =
@@ -31,14 +33,20 @@ function Buttons({}: Props) {
     if (!validateCanSave()) return;
 
     const cleanSignatures = signatures.map((sig) => {
-      const hasComma = sig.imgData.includes(",");
-      const pureBase64 = hasComma ? sig.imgData.split(",")[1] : sig.imgData;
+      const img = sig.imgData ?? null;
+
+      let pureBase64: string | null = img;
+
+      if (img && img.includes(",")) {
+        pureBase64 = img.split(",")[1] ?? null;
+      }
 
       return {
         ...sig,
         imgData: pureBase64,
       };
     });
+
     const updatedHazardReport = {
       ...hazardReport,
       userName: "testing UI",
@@ -72,6 +80,14 @@ function Buttons({}: Props) {
     return true;
   };
 
+  const isAuthorized = userAuth?.roles?.some(
+    (role) =>
+      role.name === "ROLE_SUPERVISOR" || role.name === "ROLE_SUPERINTENDENT",
+  );
+
+
+  // console.log(userAuth);
+
   return (
     <div
       style={{ marginTop: "5px", marginBottom: "15px" }}
@@ -94,7 +110,7 @@ function Buttons({}: Props) {
               variant="outline-primary"
               style={{ width: "150px", fontWeight: "bold" }}
               onClick={() => handleSaveReport()}
-              disabled={isSavingReport}
+              disabled={isSavingReport || !isAuthorized}
             >
               {isSavingReport ? (
                 <>

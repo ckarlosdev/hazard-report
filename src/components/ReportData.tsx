@@ -100,7 +100,7 @@ function ReportData({}: Props) {
                     fontWeight: "bold",
                     fontSize: "15px",
                   }}
-                  value={hazardReport.comment}
+                  value={hazardReport.comment || ""}
                   onChange={(e) => setHazardReport("comment", e.target.value)}
                 />
               </FloatingLabel>

@@ -42,7 +42,7 @@ export type Signature = {
   temporalId: string;
   ptSignaturesId: number;
   employeesId: number;
-  imgData: string;
+  imgData: string | null;
 };
 
 export type HazardReport = {
@@ -61,4 +61,10 @@ export type User = {
   id: number;
   fullName: string;
   email: string;
+  roles: Role[];
+};
+
+export type Role = {
+  id: number;
+  name: string;
 };

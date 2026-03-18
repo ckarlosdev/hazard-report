@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import type { HazardReport } from "../types";
+import { persist } from "zustand/middleware";
 
 type HazardReportStore = {
   hazardReport: HazardReport;
   setHazardReport: <K extends keyof HazardReport>(
     key: K,
-    value: HazardReport[K]
+    value: HazardReport[K],
   ) => void;
   setFullHazardReport: (data: HazardReport) => void;
   reset: () => void;
@@ -33,23 +34,30 @@ const initialData = {
   signatures: [],
 };
 
-const useHazardStore = create<HazardReportStore>()((set) => ({
-  hazardReport: initialData,
-  setHazardReport: (key, value) =>
-    set((state) => ({
-      hazardReport: {
-        ...state.hazardReport,
-        [key]: value,
-      },
-    })),
-  setFullHazardReport: (data) =>
-    set(() => ({
-      hazardReport: data,
-    })),
-  reset: () =>
-    set(() => ({
+const useHazardStore = create<HazardReportStore>()(
+  persist(
+    (set) => ({
       hazardReport: initialData,
-    })),
-}));
+      setHazardReport: (key, value) =>
+        set((state) => ({
+          hazardReport: {
+            ...state.hazardReport,
+            [key]: value,
+          },
+        })),
+      setFullHazardReport: (data) =>
+        set(() => ({
+          hazardReport: data,
+        })),
+      reset: () =>
+        set(() => ({
+          hazardReport: initialData,
+        })),
+    }),
+    {
+      name: "hazard-report-storage",
+    },
+  ),
+);
 
 export default useHazardStore;

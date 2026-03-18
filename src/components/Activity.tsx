@@ -21,7 +21,7 @@ function Activity({}: Props) {
                 className="mb-3"
               >
                 <Form.Control
-                  value={activity.activity}
+                  value={activity.activity || ""}
                   onChange={(e) => setActivity("activity", e.target.value)}
                   as="textarea"
                   style={{
@@ -42,7 +42,7 @@ function Activity({}: Props) {
                 className="mb-3"
               >
                 <Form.Control
-                  value={activity.hazards}
+                  value={activity.hazards || ""}
                   onChange={(e) => setActivity("hazards", e.target.value)}
                   as="textarea"
                   style={{
@@ -61,7 +61,7 @@ function Activity({}: Props) {
                 className="mb-3"
               >
                 <Form.Control
-                  value={activity.controls}
+                  value={activity.controls || ""}
                   onChange={(e) => setActivity("controls", e.target.value)}
                   as="textarea"
                   style={{
