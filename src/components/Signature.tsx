@@ -53,6 +53,7 @@ function Signature({}: Props) {
                             fontSize: "12px",
                           }}
                           onClick={() => removeSignature(sig.temporalId)}
+                          className="no-print"
                         >
                           Remove
                         </Button>

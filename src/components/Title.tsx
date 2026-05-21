@@ -24,42 +24,62 @@ function Title({ onPrint }: Props) {
       <div>
         <img style={{ width: "250px" }} src={hmbLogo} alt="" />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: " 300px 1fr 300px" }}>
+
+      {/* CAMBIO AQUÍ: Usamos Flexbox en lugar de un Grid rígido */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
+        className="title-flex-container"
+      >
+        {/* Columna Izquierda: Botón (se oculta al imprimir) */}
         <div
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            flex: "1 1 0px", // Mantiene un ancho equilibrado en pantalla
           }}
+          className="no-print"
         >
           <Button
             variant="outline-danger"
             onClick={() => onPrint()}
-            className="no-print"
-            style={{ fontWeight: "bold", marginTop: "20px" }}
+            style={{ fontWeight: "bold" }}
           >
             Print Report (PDF)
           </Button>
         </div>
-        <div>
+
+        {/* Columna Central: El título del reporte */}
+        <div style={{ flex: "2 1 0px" }}>
           <h2
             style={{
               fontWeight: "bold",
               marginTop: "20px",
               marginBottom: "10px",
+              fontSize: "1.75rem", // Ajusta si necesitas que entre holgado en una línea
+              whiteSpace: "nowrap", // Evita que se rompa en líneas si el espacio es justo
             }}
           >
-            Daily Pre-Task Job Hazard Analisys
+            Daily Pre-Task Job Hazard Analysis
           </h2>
         </div>
+
+        {/* Columna Derecha: Usuario y Logout (se oculta al imprimir) */}
         <div
           style={{
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-end",
             gap: "10px",
+            flex: "1 1 0px", // Mantiene el mismo equilibrio que el lado izquierdo
           }}
+          className="no-print"
         >
           <div
             style={{
@@ -73,7 +93,7 @@ function Title({ onPrint }: Props) {
             <span style={{ opacity: 0.7 }}>User: </span>
             <span className="text-dark">{userAuth?.fullName || "Guest"}</span>
           </div>
-          <LogoutButton />{" "}
+          <LogoutButton />
         </div>
       </div>
     </div>

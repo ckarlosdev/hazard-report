@@ -31,7 +31,11 @@ function Layout({}: Props) {
     hazardReportId ? Number(hazardReportId) : 0,
   );
 
-  const { setFullHazardReport, reset: resetHazard } = useHazardStore();
+  const {
+    setFullHazardReport,
+    reset: resetHazard,
+    hazardReport,
+  } = useHazardStore();
   const { setFullActivityData, reset: resetActivity } = useActivityStore();
   const { setFullPretaskOptionsData, reset: resetPretaskOptions } =
     usePretaskOptionsStore();
@@ -84,7 +88,7 @@ function Layout({}: Props) {
 
   const handlePrint = useReactToPrint({
     contentRef: componenteRef,
-    documentTitle: "Hazard Report",
+    documentTitle: `Hazard Report - ${hazardReport?.date || "No Date"}`,
   });
 
   const handleReset = () => {

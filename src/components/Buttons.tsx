@@ -49,7 +49,7 @@ function Buttons({}: Props) {
 
     const updatedHazardReport = {
       ...hazardReport,
-      userName: "testing UI",
+      userName: userAuth?.email || "undefined",
       jobsId: jobId,
       activities: [activity],
       options: pretaskOptions,
@@ -82,9 +82,10 @@ function Buttons({}: Props) {
 
   const isAuthorized = userAuth?.roles?.some(
     (role) =>
-      role.name === "ROLE_SUPERVISOR" || role.name === "ROLE_SUPERINTENDENT",
+      role.name === "ROLE_SUPERVISOR" ||
+      role.name === "ROLE_SUPERINTENDENT" ||
+      role.name === "ROLE_ADMIN",
   );
-
 
   // console.log(userAuth);
 
@@ -97,6 +98,7 @@ function Buttons({}: Props) {
         <Card.Body>
           <div className="d-flex justify-content-center gap-3">
             <Button
+              title="Go Back to Binder"
               variant="outline-primary"
               style={{ width: "150px", fontWeight: "bold" }}
               onClick={() => {
@@ -104,7 +106,7 @@ function Buttons({}: Props) {
                 window.location.href = `https://ckarlosdev.github.io/binder-webapp/#/binder/${jobId}`;
               }}
             >
-              Go Back
+              Binder
             </Button>
             <Button
               variant="outline-primary"
